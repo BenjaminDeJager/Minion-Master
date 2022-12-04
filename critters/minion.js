@@ -145,7 +145,8 @@ class Minion {
             y: 0
           }
         } else {
-          this.tryToFixSelf(); //invalid state!
+          this.actionTime = 0;
+          this.state = 3
         }
 
       }
@@ -186,7 +187,7 @@ class Minion {
   //this.state is only the *representation* of the minion's state and thats all it CAN be.
 
   attackEnemy() {
-    if(this.target) {
+    if (this.target & this.target.health > 0) {
       //we do still have a target to attack and it is alive.
       let ent = this.target;
       if((ent.state != 0 || ent.health > 0 || ((entity instanceof Ogre || entity instanceof Dragon ) && !entity.removeFromWorld)) && reach(this, ent)) {
@@ -439,8 +440,6 @@ class Minion {
       this.direction = 0;
     }
 
-    let tempAdjust = 70; //I'm not sure why the sprites are so off-center, but I'm doing this for now.
-
     var w = this.animations[temp][this.direction].width;
 
     if (this.direction == 1) {
@@ -500,6 +499,7 @@ class Minion {
             x: this.target.center.x,
             y: this.target.center.y
           }
+          
           ctx.strokeStyle = "red";
           ctx.fillStyle = "red";
           radius = this.target.radius
@@ -509,6 +509,7 @@ class Minion {
             x: this.target.center.x,
             y: this.target.center.y
           }
+
           ctx.strokeStyle = "blue";
           ctx.fillStyle = "blue";
           radius = this.target.radius
@@ -518,6 +519,7 @@ class Minion {
             x: this.target.x,
             y: this.target.y
           }
+
           ctx.strokeStyle = "yellow";
           ctx.fillStyle = "yellow";
           radius = this.radius;
@@ -597,14 +599,6 @@ class Minion {
     } else if (this.waitTill < printTime) {
       this.waitTill = 0;
       this.amIStuck();
-    }
-  }
-
-  tryToFixSelf() {
-    this.target = null;
-    this.state = this.findNewTarget();
-    if(params.DEBUG) {
-      //console.log("minion at: {" + this.center.x + "," + this.center.y + "} self fixing, changed to: " + this.state + " and targeting: "+ this.target.x + ", " + this.target.y);
     }
   }
 
